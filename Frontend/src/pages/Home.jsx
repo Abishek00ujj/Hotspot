@@ -1,7 +1,14 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Navbar from '../components/Navbar'
 const Home = () => {
   const [getNick,setNick]=useState(null);
+
+  const[latitude,Setlatitude]=useState(null);
+
+  const[longitude,Setlongitude]=useState(null);
+
+  const[Code,SetCode]=useState(null);
+  
 
   const nameRef=useRef(null);
   const handleAdd=()=>{
@@ -9,11 +16,35 @@ const Home = () => {
     console.log(NickName);
   }
 
+  const getLocation=()=>{
+    if(navigator.geolocation)
+    {
+        navigator.geolocation.getCurrentPosition((position)=>{
+           Setlatitude(position.coords.latitude);
+           Setlongitude(position.coords.longitude);
+          })
+        }
+      }
+      console.log(Code);
+      useEffect(()=>{
+        getLocation(); 
+        if(latitude && longitude)
+          {
+            //  console.log(latitude+" "+longitude); 
+              const la=latitude.toString();
+              const lo=longitude.toString();
+             // console.log(la.substring(0,la.length-1));
+             // console.log(lo.substring(0,lo.length-1));
+              const SecretCode=la.substring(0,la.length-1)+lo.substring(0,lo.length-1);
+              console.log(SecretCode);
+              SetCode(SecretCode);
+          }
+  },[latitude,longitude]);
 
 
   return (
     <>
-     <Navbar/>
+     <Navbar props={Code}/>
      <div className='w-screen h-screen bg-gray-300 flex'>
      {
       getNick==null?(
