@@ -43,7 +43,7 @@ const Home = () => {
 
 
   return (
-    <>
+    <> 
      <Navbar props={Code}/>
      <div className='w-screen h-screen bg-gray-300 flex'>
      {

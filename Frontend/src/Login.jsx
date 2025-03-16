@@ -35,7 +35,7 @@ const Login = () => {
             <div className='text-green-300 text-3xl font-bold w-full  text-center'>
                WELCOME TO HOTSPOT
             </div>
-            <div className='w-full flex justify-end text-green-300 text-[15px] font-bold'>
+            <div className='w-full flex justify-center text-green-300 text-[15px] font-bold'>
              A Place Where you can find Nearby peoples.
             </div>
 
