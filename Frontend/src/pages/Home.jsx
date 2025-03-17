@@ -43,9 +43,9 @@ const Home = () => {
 
   useEffect(() => {
     if (location.latitude && location.longitude) {
-      const latRounded = location.latitude.toFixed(2);
-const lonRounded = location.longitude.toFixed(2);
-const SecretCode = `${latRounded}_${lonRounded}`;
+      const la = location.latitude.toString();
+      const lo = location.longitude.toString();
+      const SecretCode = la.substring(0, la.length - 1) + lo.substring(0, lo.length - 1);
       setCode(SecretCode);
 
       socketRef.current = io(Backend);
@@ -117,11 +117,11 @@ const SecretCode = `${latRounded}_${lonRounded}`;
               ))}
             </div>
 
-            <div className='w-full max-w-2xl mx-auto p-4 flex items-center bg-white border-t border-gray-300 fixed bottom-0 left-0 right-0'>
+            <div className='w-full max-w-2xl mx-auto p-4 flex items-center bg-black border-t border-gray-300 fixed bottom-0 left-0 right-0'>
               <input 
                 ref={messageRef} 
                 type="text" 
-                className='flex-1 p-3 rounded-full border border-gray-400' 
+                className='flex-1 text-white p-3 rounded-full border border-gray-400' 
                 placeholder='Type a message...' 
               />
               <Send onClick={sendMessage} size={40} className='text-blue-600 ml-3 cursor-pointer' />
