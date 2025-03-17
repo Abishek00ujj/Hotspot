@@ -43,9 +43,9 @@ const Home = () => {
 
   useEffect(() => {
     if (location.latitude && location.longitude) {
-      const la = location.latitude.toString();
-      const lo = location.longitude.toString();
-      const SecretCode = la.substring(0, la.length - 1) + lo.substring(0, lo.length - 1);
+      const latRounded = location.latitude.toFixed(2);
+const lonRounded = location.longitude.toFixed(2);
+const SecretCode = `${latRounded}_${lonRounded}`;
       setCode(SecretCode);
 
       socketRef.current = io(Backend);
