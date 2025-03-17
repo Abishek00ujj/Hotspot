@@ -1,6 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Navbar from '../components/Navbar'
+import toast, { Toaster } from "react-hot-toast";
+import io from 'socket.io-client'
+import Chat from '../components/Chat';
+import  Input from '../components/Input' ;
+import {Send} from 'lucide-react'
+import Herchat from '../components/Herchat';
+
+
 const Home = () => {
+
+
+  const DataMessage=[1,2,3,4,5,6,7,8,9,10];
   const [getNick,setNick]=useState(null);
 
   const[latitude,Setlatitude]=useState(null);
@@ -8,13 +19,23 @@ const Home = () => {
   const[longitude,Setlongitude]=useState(null);
 
   const[Code,SetCode]=useState(null);
+
+  const nickRef=useRef();
+
+  const Backend='http://localhost:199';
+
+
   
 
   const nameRef=useRef(null);
   const handleAdd=()=>{
     const NickName=nameRef.current.value;
+    setNick(NickName);
+    localStorage.setItem('nickname',getNick);
+    toast.success("Anonymous Name added Succuessfully!")
     console.log(NickName);
   }
+  const UserData=JSON.parse(localStorage.getItem('userdata'));
 
   const getLocation=()=>{
     if(navigator.geolocation)
@@ -25,29 +46,42 @@ const Home = () => {
           })
         }
       }
+      let socket;
       console.log(Code);
       useEffect(()=>{
         getLocation(); 
+        let SecretCode;
         if(latitude && longitude)
           {
-            //  console.log(latitude+" "+longitude); 
               const la=latitude.toString();
               const lo=longitude.toString();
-             // console.log(la.substring(0,la.length-1));
-             // console.log(lo.substring(0,lo.length-1));
-              const SecretCode=la.substring(0,la.length-1)+lo.substring(0,lo.length-1);
+              SecretCode=la.substring(0,la.length-1)+lo.substring(0,lo.length-1);
               console.log(SecretCode);
               SetCode(SecretCode);
           }
+
+          socket=io(Backend);
+          socket.emit('join',{name:UserData.name,room:SecretCode});
+          setTimeout(() =>{
+            toast.success(`${UserData.name} joined the room`, { duration: 3000, icon: "😉" });
+          }, 3000);
+          return ()=>{
+            socket.disconnect();
+            socket.off();
+          }
+          
   },[latitude,longitude]);
+
+  let NickName=localStorage.getItem('nickname');
 
 
   return (
     <> 
+          <Toaster />
      <Navbar props={Code}/>
-     <div className='w-screen h-screen bg-gray-300 flex'>
+     <div className='w-screen h-screen bg-gray-300 flex justify-center items-center'>
      {
-      getNick==null?(
+      NickName==null?(
         <>
         <div className='w-screen h-screen flex justify-center items-center'>
           <div className='w-[400px] h-[300px] flex flex-col bg-gray-600 rounded-2xl justify-center items-center space-y-3'>
@@ -72,7 +106,28 @@ const Home = () => {
         </div>
         </>
       ):(
-        null
+        <>
+        <div className='bg-gray w-screen h-auto flex flex-col justify-center items-center'>
+          <div>
+            {
+            true&&(
+              DataMessage.map((item,index)=>{
+                return(
+                  <>
+                <Chat/>
+                <Herchat/>
+                </>
+                )
+              })
+            )
+          }
+          </div>
+          <div className='w-full flex justify-center items-center fixed bottom-0'>
+          <input type="text" className=' text-white bg-[#141413] rounded-3xl w-[80%] h-[50px] '/>
+          <Send size={40}/>  
+          </div>         
+        </div>
+        </>
       )
      }
      
