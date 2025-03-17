@@ -1,139 +1,136 @@
-import React, { useEffect, useRef, useState } from 'react'
-import Navbar from '../components/Navbar'
+import React, { useEffect, useRef, useState } from 'react';
+import Navbar from '../components/Navbar';
 import toast, { Toaster } from "react-hot-toast";
-import io from 'socket.io-client'
+import io from 'socket.io-client';
 import Chat from '../components/Chat';
-import  Input from '../components/Input' ;
-import {Send} from 'lucide-react'
 import Herchat from '../components/Herchat';
-
+import { Send, User } from 'lucide-react';
 
 const Home = () => {
+  let nickName=localStorage.getItem('nickname');
+  const messageRef = useRef(null);
+  const nameRef = useRef(null);
+  const chatContainerRef = useRef(null);
+  const socketRef = useRef(null);
 
+  const [nick, setNick] = useState(localStorage.getItem("nickname"));
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
+  const [code, setCode] = useState(null);
+  const [messages, setMessages] = useState([]);
 
-  const DataMessage=[1,2,3,4,5,6,7,8,9,10];
-  const [getNick,setNick]=useState(null);
+  const Backend = 'http://localhost:199';
+  const UserData = JSON.parse(localStorage.getItem('userdata'));
 
-  const[latitude,Setlatitude]=useState(null);
+  const handleAdd = () => {
+    const NickName = nameRef.current.value.trim();
+    if (!NickName) return;
 
-  const[longitude,Setlongitude]=useState(null);
-
-  const[Code,SetCode]=useState(null);
-
-  const nickRef=useRef();
-
-  const Backend='http://localhost:199';
-
-
-  
-
-  const nameRef=useRef(null);
-  const handleAdd=()=>{
-    const NickName=nameRef.current.value;
     setNick(NickName);
-    localStorage.setItem('nickname',getNick);
-    toast.success("Anonymous Name added Succuessfully!")
-    console.log(NickName);
-  }
-  const UserData=JSON.parse(localStorage.getItem('userdata'));
+    localStorage.setItem('nickname', NickName);
+    toast.success("Anonymous Name added Successfully!");
+  };
 
-  const getLocation=()=>{
-    if(navigator.geolocation)
-    {
-        navigator.geolocation.getCurrentPosition((position)=>{
-           Setlatitude(position.coords.latitude);
-           Setlongitude(position.coords.longitude);
-          })
-        }
-      }
-      let socket;
-      console.log(Code);
-      useEffect(()=>{
-        getLocation(); 
-        let SecretCode;
-        if(latitude && longitude)
-          {
-              const la=latitude.toString();
-              const lo=longitude.toString();
-              SecretCode=la.substring(0,la.length-1)+lo.substring(0,lo.length-1);
-              console.log(SecretCode);
-              SetCode(SecretCode);
-          }
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      });
+    }
+  }, []);
 
-          socket=io(Backend);
-          socket.emit('join',{name:UserData.name,room:SecretCode});
-          setTimeout(() =>{
-            toast.success(`${UserData.name} joined the room`, { duration: 3000, icon: "😉" });
-          }, 3000);
-          return ()=>{
-            socket.disconnect();
-            socket.off();
-          }
-          
-  },[latitude,longitude]);
+  useEffect(() => {
+    if (location.latitude && location.longitude) {
+      const la = location.latitude.toString();
+      const lo = location.longitude.toString();
+      const SecretCode = la.substring(0, la.length - 1) + lo.substring(0, lo.length - 1);
+      setCode(SecretCode);
 
-  let NickName=localStorage.getItem('nickname');
+      socketRef.current = io(Backend);
+      socketRef.current.emit("join", { name: nickName, room: SecretCode });
 
+      toast.success(`${UserData?.name} joined the room`, { duration: 3000, icon: "😉" });
+
+      socketRef.current.on("message", (message) => {
+        setMessages((prevMessages) => [...prevMessages, message]);
+      });
+
+      return () => {
+        socketRef.current.disconnect();
+      };
+    }
+  }, [location]);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const sendMessage = () => {
+    const messageText = messageRef.current.value.trim();
+    if (!messageText) return;
+
+    socketRef.current.emit("sendMessage", messageText);
+    messageRef.current.value = '';
+  };
 
   return (
-    <> 
-          <Toaster />
-     <Navbar props={Code}/>
-     <div className='w-screen h-screen bg-gray-300 flex justify-center items-center'>
-     {
-      NickName==null?(
-        <>
-        <div className='w-screen h-screen flex justify-center items-center'>
-          <div className='w-[400px] h-[300px] flex flex-col bg-gray-600 rounded-2xl justify-center items-center space-y-3'>
-              <div className='w-full text-green-400 text-center font-bold text-2xl'>
-                 Welcome,on board.
-              </div>
-              <div className='w-full text-white text-center font-bold text-3xl'>
+    <>
+      <Toaster />
+      <Navbar props={code} />
+      <div className='w-screen h-screen flex flex-col items-center'>
+        {!nick ? (
+          <div className='w-full h-screen flex justify-center items-center'>
+            <div className='w-[90%] sm:w-[400px] h-auto p-6 flex flex-col bg-gray-600 rounded-2xl justify-center items-center space-y-4'>
+              <h2 className='text-green-400 font-bold text-2xl text-center'>
+                Welcome, on board.
+              </h2>
+              <p className='text-white font-bold text-lg text-center'>
                 Your anonymous name?
-              </div>
-              <div className='w-[80%] rounded-2xl flex justify-center items-center bg-green-200 text-black'>
-                <input ref={nameRef} className='w-full h-full pl-2 pr-2 pt-4 pb-4' type="text" placeholder='Anonymous name' />
-              </div>
-              <div className='w-full flex justify-end text-[15px] text-red-600 font-light'>
-                 * We will not disclose your details anywhere🤫
-              </div>
-              <div className='w-full flex justify-end p-4'>
-                  <button onClick={handleAdd} className='p-2 bg-green-600 rounded-2xl text-white text-[15px]'>
-                      Set Name
-                  </button>
-              </div>
+              </p>
+              <input 
+                ref={nameRef} 
+                className='w-full p-3 rounded-xl bg-green-200 text-black' 
+                type="text" 
+                placeholder='Anonymous name' 
+              />
+              <p className='text-red-600 text-sm text-center'>* We will not disclose your details anywhere 🤫</p>
+              <button onClick={handleAdd} className='px-4 py-2 bg-green-600 rounded-xl text-white'>
+                Set Name
+              </button>
+            </div>
           </div>
-        </div>
-        </>
-      ):(
-        <>
-        <div className='bg-gray w-screen h-auto flex flex-col justify-center items-center'>
-          <div>
-            {
-            true&&(
-              DataMessage.map((item,index)=>{
-                return(
-                  <>
-                <Chat/>
-                <Herchat/>
-                </>
-                )
-              })
-            )
-          }
-          </div>
-          <div className='w-full flex justify-center items-center fixed bottom-0'>
-          <input type="text" className=' text-white bg-[#141413] rounded-3xl w-[80%] h-[50px] '/>
-          <Send size={40}/>  
-          </div>         
-        </div>
-        </>
-      )
-     }
-     
-</div>
-    </>
-  )
-}
+        ) : (
+          <div className='w-full h-screen flex flex-col bg-[#121111]'>
+            <div 
+              ref={chatContainerRef} 
+              className='flex-1 overflow-y-auto p-4 space-y-3 w-full max-w-2xl mx-auto'
+              style={{ maxHeight: 'calc(100vh - 100px)' }}
+            >
+              {messages.map((msg, index) => (
+                msg.user === UserData?.name 
+                  ? <Herchat key={index} message={msg.text} name={nickName} /> 
+                  :<Chat key={index} message={msg.text} name={msg.user} /> 
+              ))}
+            </div>
 
-export default Home
+            <div className='w-full max-w-2xl mx-auto p-4 flex items-center bg-white border-t border-gray-300 fixed bottom-0 left-0 right-0'>
+              <input 
+                ref={messageRef} 
+                type="text" 
+                className='flex-1 p-3 rounded-full border border-gray-400' 
+                placeholder='Type a message...' 
+              />
+              <Send onClick={sendMessage} size={40} className='text-blue-600 ml-3 cursor-pointer' />
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+};
+
+export default Home;
