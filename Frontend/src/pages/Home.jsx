@@ -18,7 +18,7 @@ const Home = () => {
   const [code, setCode] = useState(null);
   const [messages, setMessages] = useState([]);
 
-  const Backend = 'http://localhost:199';
+  const Backend = 'https://hotspot5.onrender.com';
   const UserData = JSON.parse(localStorage.getItem('userdata'));
 
   const handleAdd = () => {
