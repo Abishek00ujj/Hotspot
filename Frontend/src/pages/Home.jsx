@@ -80,7 +80,7 @@ const Home = () => {
   return (
     <>
       <Toaster />
-      <Navbar props={code} />
+      <Navbar props={location} />
       <div className='w-screen h-screen flex flex-col items-center'>
         {!nick ? (
           <div className='w-full h-screen flex justify-center items-center'>
@@ -107,9 +107,14 @@ const Home = () => {
           <div className='w-full h-screen flex flex-col bg-[#121111]'>
             <div 
               ref={chatContainerRef} 
-              className='flex-1 overflow-y-auto p-4 space-y-3 w-full max-w-2xl mx-auto'
+              className='flex-1 text-white overflow-y-auto p-4 space-y-3 w-full max-w-2xl mx-auto'
               style={{ maxHeight: 'calc(100vh - 100px)' }}
             >
+             {
+             location.latitude &&(
+                location.latitude+" "+location.longitude
+              )
+            }
               {messages.map((msg, index) => (
                 msg.user === UserData?.name 
                   ? <Herchat key={index} message={msg.text} name={nickName} /> 

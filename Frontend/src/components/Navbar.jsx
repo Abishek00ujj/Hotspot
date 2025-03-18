@@ -2,10 +2,10 @@ import React from 'react'
 import UserImg from '../assets/user.jpg'
 import {Sun} from 'lucide-react'
 import {Moon} from 'lucide-react'
-const Navbar = () => {
+const Navbar = (props) => {
     const storedUserData = localStorage.getItem('userdata');
     const UserData = storedUserData ? JSON.parse(storedUserData) : null;
-    console.log(UserData)
+    console.log(props)
   return (
     <>
     <div className='w-screen h-auto bg-blue-950 flex justify-between p-4 top-0'>
