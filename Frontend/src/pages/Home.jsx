@@ -43,8 +43,8 @@ const Home = () => {
 
   useEffect(() => {
     if (location.latitude && location.longitude) {
-      const la = Math.floor(location.latitude / 0.01);
-      const lo = Math.floor(location.longitude / 0.01);
+      const la = Math.floor(location.latitude / 0.1);
+      const lo = Math.floor(location.longitude / 0.1);
       const SecretCode = `${Math.floor(la)}_${Math.floor(lo)}`;
       setCode(SecretCode);
 
