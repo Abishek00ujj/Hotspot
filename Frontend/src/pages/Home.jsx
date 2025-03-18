@@ -116,8 +116,8 @@ const Home = () => {
               )
             }
               {messages.map((msg, index) => (
-                msg.user === UserData?.name 
-                  ? <Herchat key={index} message={msg.text} name={nickName} /> 
+                msg.user === nickName 
+                  ?<Herchat key={index} message={msg.text} name={nickName} /> 
                   :<Chat key={index} message={msg.text} name={msg.user} /> 
               ))}
             </div>
