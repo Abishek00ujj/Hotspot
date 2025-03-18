@@ -68,6 +68,7 @@ const Home = () => {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
+  console.log(messages);
 
   const sendMessage = () => {
     const messageText = messageRef.current.value.trim();
@@ -76,6 +77,8 @@ const Home = () => {
     socketRef.current.emit("sendMessage", messageText);
     messageRef.current.value = '';
   };
+
+  console.log(nickName);
 
   return (
     <>
@@ -116,10 +119,13 @@ const Home = () => {
               )
             }
               {messages.map((msg, index) => (
-                msg.user === nickName 
-                  ?<Herchat key={index} message={msg.text} name={nickName} /> 
-                  :<Chat key={index} message={msg.text} name={msg.user} /> 
+                // console.log(msg.user)
+                msg.user.trim() != nickName.toLocaleLowerCase()||""
+                  ?<Herchat key={index} message={msg.text} name={msg.user} /> 
+                  :<Chat key={index} message={msg.text} name={nick} /> 
               ))}
+              {/* <Herchat key={2} message={"hi"} name={nickName} /> 
+              <Chat key={1} message={"hello"} name={"k"} />  */}
             </div>
 
             <div className='w-full max-w-2xl mx-auto p-4 flex items-center bg-black border-t border-gray-300 fixed bottom-0 left-0 right-0'>
