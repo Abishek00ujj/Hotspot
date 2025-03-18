@@ -115,7 +115,7 @@ const Home = () => {
             >
              {
              location.latitude && (
-                location.latitude+" "+location.longitude
+                "Location coordinates: "+location.latitude+" "+location.longitude
               )
             }
               {messages.map((msg, index) => (
@@ -124,8 +124,7 @@ const Home = () => {
                   ?<Herchat key={index} message={msg.text} name={msg.user} /> 
                   :<Chat key={index} message={msg.text} name={nick} /> 
               ))}
-              {/* <Herchat key={2} message={"hi"} name={nickName} /> 
-              <Chat key={1} message={"hello"} name={"k"} />  */}
+
             </div>
 
             <div className='w-full max-w-2xl mx-auto p-4 flex items-center bg-black border-t border-gray-300 fixed bottom-0 left-0 right-0'>
