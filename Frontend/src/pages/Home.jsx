@@ -85,7 +85,7 @@ const Home = () => {
       <Toaster />
       <Navbar props={location} />
       <div className='w-screen h-screen flex flex-col items-center'>
-        {!nick ? (
+        {!nickName ? (
           <div className='w-full h-screen flex justify-center items-center'>
             <div className='w-[90%] sm:w-[400px] h-auto p-6 flex flex-col bg-gray-600 rounded-2xl justify-center items-center space-y-4'>
               <h2 className='text-green-400 font-bold text-2xl text-center'>
