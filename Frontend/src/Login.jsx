@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { GoogleLogin } from '@react-oauth/google';
 import { Navigate } from 'react-router-dom';
 import {XIcon} from 'lucide-react'
-
+import LogoImage from './assets/LogoH.png'
 const Login = () => {
 
     const [navigate,setNavigate]=useState(false);
@@ -22,6 +22,7 @@ const Login = () => {
     const Terms=()=>{
       Setterms(true);
     }
+    // <img src={LogoImage} className="w-[200px] max-w-[250px] h-auto" alt="Logo" />
   return (
    <>
     <div
@@ -31,14 +32,14 @@ const Login = () => {
         backgroundImage: "url('https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExc2htZDdvY21tNDZ1bGdwZHh5bGNpYXQxcGc1eHRwazhocjRtczAzcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5my3jD9HAX4jm6njTe/giphy.gif')",
       }}
     >
-        <div className='w-[450px] h-600px flex-col justify-center items-center bg-black rounded-2xl p-10 space-y-2'>
+        <div className='w-[300px] h-600px flex-col justify-center items-center bg-black rounded-2xl p-10 space-y-10'>
             <div className='text-green-300 text-3xl font-bold w-full  text-center'>
                WELCOME TO HOTSPOT
             </div>
             <div className='w-full flex justify-center text-green-300 text-[15px] font-bold'>
              A Place Where you can find Nearby peoples.
             </div>
-
+            <div className='w-full flex justify-center items-center'>
             <GoogleLogin
             onSuccess={(credentialResponse) => {
               const { credential } = credentialResponse;
@@ -59,16 +60,18 @@ const Login = () => {
             onError={() => {
               console.error('Login Failed');
             }}
+
           />
+          </div>
         </div>
         {
           !terms?(
                <>
-                   <div className='w-[450px] h-[200px] bg-gray-800 text-red-400 fixed rounded-2xl flex flex-col'>
+                   <div className='w-[450px] h-[300px] bg-gray-800 text-red-400 fixed rounded-2xl flex flex-col '>
           <div className='w-full h-full flex justify-between'>
               <div className='w-full flex flex-col justify-start items-center'>
                  <p className='text-green-500 text-[20px]'>TERMS & CONDITONS</p>
-                 <div className='w-full h-full flex flex-col justify-center items-start pl-5'>
+                 <div className='w-full h-full flex flex-col justify-center items-start pl-5 gap-3'>
                     <div className='text-[15px] text-white font-medium'>
                        1.Maintain Discipline
                     </div>

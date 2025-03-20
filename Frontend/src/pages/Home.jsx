@@ -51,7 +51,7 @@ const Home = () => {
       socketRef.current = io(Backend);
       socketRef.current.emit("join", { name: nickName, room: SecretCode });
 
-      toast.success(`${UserData?.name} joined the room`, { duration: 3000, icon: "😉" });
+      toast.success(`Welcome ${UserData?.name}!`, { duration: 3000, icon: "🎉" });
 
       socketRef.current.on("message", (message) => {
         setMessages((prevMessages) => [...prevMessages, message]);
@@ -61,14 +61,14 @@ const Home = () => {
         socketRef.current.disconnect();
       };
     }
-  }, [location]);
+  }, [location,nickName]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
-  console.log(messages);
+  //console.log(messages);
 
   const sendMessage = () => {
     const messageText = messageRef.current.value.trim();
@@ -78,13 +78,13 @@ const Home = () => {
     messageRef.current.value = '';
   };
 
-  console.log(nickName);
+  //console.log(nickName);
 
   return (
     <>
       <Toaster />
       <Navbar props={location} />
-      <div className='w-screen h-screen flex flex-col items-center'>
+      <div className='w-screen h-screen flex flex-col bg-[#121111] items-center'>
         {!nickName ? (
           <div className='w-full h-screen flex justify-center items-center'>
             <div className='w-[90%] sm:w-[400px] h-auto p-6 flex flex-col bg-gray-600 rounded-2xl justify-center items-center space-y-4'>
