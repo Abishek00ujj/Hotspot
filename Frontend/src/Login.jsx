@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import { GoogleLogin } from '@react-oauth/google';
 import { Navigate } from 'react-router-dom';
-import {XIcon} from 'lucide-react'
-import LogoImage from './assets/LogoH.png'
 const Login = () => {
 
     const [navigate,setNavigate]=useState(false);
